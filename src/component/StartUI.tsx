@@ -7,6 +7,7 @@ import { socketRoot } from "./../socket/socket";
 import phaserRoot from "../core/game";
 
 const videoAlt: string = "assets/altCamera.png";
+const socket = socketRoot;
 
 const StartUI = () => {
   const [name, setname] = useState("");
@@ -17,12 +18,11 @@ const StartUI = () => {
 
   const submitHandler = () => {
     store.dispatch(setNickName(name));
-    scene.scene.start("InitGame", { id: id, name: name });
+    scene.scene.start("InitGame", { id: socket.id, name: name });
     navigate("/main");
   };
 
   useEffect(() => {
-    const socket = socketRoot;
     socket.on("setid", (data) => {
       setId(data);
     });

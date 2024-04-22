@@ -18,6 +18,7 @@ export default class InitGame extends Phaser.Scene {
   init(data: any) {
     this.name = data.name;
     this.id = data.id;
+    console.log(data);
     socket.emit("init", { name: data.name });
   }
   create(): void {
@@ -140,13 +141,20 @@ export default class InitGame extends Phaser.Scene {
     socket.on("move", (data) => {
       this.gridEngine.moveTo(`player-${data.id}`, data.position);
     });
-    socket.on("roomIn", (data) => {
+    socket.on("roomEnter", (data) => {
       console.log(data);
-      this.gridEngine.setPosition(
-        `player-${Object.keys(data)[0]}`,
-        data[Object.keys(data)[0]]
-      );
+      this.gridEngine.setPosition(`player-${data.id}`, data.position);
     });
+    socket.on("roomLeave", (data)=>{
+      this.gridEngine.setPosition(`player-${data.id}`, data.position);
+    })
+    // socket.on("roomIn", (data) => {
+    //   console.log(data);
+    //   this.gridEngine.setPosition(
+    //     `player-${Object.keys(data)[0]}`,
+    //     data[Object.keys(data)[0]]
+    //   );
+    // });
     socket.on("disconnected", (data) => {
       this.gridEngine.getContainer(`player-${data.target}`)?.destroy();
       this.gridEngine.removeCharacter(`player-${data.target}`);
@@ -186,6 +194,7 @@ export default class InitGame extends Phaser.Scene {
           )
         ) {
           this.gridEngine.setPosition("player", { x: 18, y: 31 });
+          socket.emit("roomLeave", { target: this.id, position: { x: 18, y: 31 } })
         }
       }
     });
@@ -222,7 +231,7 @@ export default class InitGame extends Phaser.Scene {
   testModal(data: any) {
     if (data) {
       this.gridEngine.setPosition("player", { x: 94, y: 3 });
-      socket.emit("move", { target: this.id, position: { x: 94, y: 3 } });
+      socket.emit("roomEnter", { target: this.id, position: { x: 94, y: 3 } });
     } else {
       this.gridEngine.move("player", Direction.UP);
     }

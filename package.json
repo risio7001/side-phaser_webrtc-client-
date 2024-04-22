@@ -1,8 +1,7 @@
 {
   "name": "react-phaser",
   "author": {
-    "name": "MrBonesNFT",
-    "url": "https://github.com/MrBonesNFT"
+    "":""
   },
   "license": "MIT",
   "version": "1.0.0",
@@ -26,7 +25,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "export PORT=8087 && react-scripts start",
     "build": "react-scripts build --production",
     "test": "react-scripts test"
   },
