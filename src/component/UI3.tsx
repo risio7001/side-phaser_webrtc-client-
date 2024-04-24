@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import SimplePeer from "simple-peer";
 
 interface roomDataProps {
+  target: any;
   roomNum: string;
   roomCnt: number;
   userList: Array<string>;
@@ -18,15 +19,25 @@ const UI3 = () => {
   const [answerPeers, setAnswerPeers] = useState<any>({});
   const [id, setID] = useState<any>();
   const [screen, setScreen] = useState<MediaStream>();
+  const [peers, setPeers] = useState<any>();
+  const [leave, setLeave] = useState<string>();
 
   const socket = socketRoot;
 
   const [rightBar, setRightBar] = useState(false);
   const [roomData, setRoomData] = useState<roomDataProps>({
+    target: "",
     roomNum: "",
     roomCnt: 0,
     userList: [""],
   });
+
+  useEffect(() => {
+    if (leave) {
+      peers[leave!].destroy();
+      delete peers[`${leave}`]
+    }
+  }, [leave]);
 
   useEffect(() => {
     navigator.mediaDevices
@@ -44,6 +55,7 @@ const UI3 = () => {
       setRoomData(data);
     });
     socket.on("disconnected", (data) => {
+      setLeave(data.target)
       setRoomData(data);
     });
   }, []);
@@ -67,16 +79,20 @@ const UI3 = () => {
       });
 
       tempPeers[id].on("stream", (stream: any) => {
-        console.log("rev stream : ", stream);
         const box = document.querySelector("#test");
         const video = document.createElement("video");
+        video.id = id;
+        video.className = "videoBox"
         video.srcObject = stream;
         video.autoplay = true;
         video.style.width = "300px";
         box?.appendChild(video);
       });
 
-      console.log(tempPeers[id].streams);
+      tempPeers[id].on("close", (data: any) => {
+        const video = document.querySelector(`#${id}`);
+        video?.remove()
+      })
 
       socket.on("acceptcall", (data: any) => {
         if (tempPeers[data.id]) {
@@ -85,6 +101,7 @@ const UI3 = () => {
       });
 
       setOfferPeers(tempPeers);
+      setPeers({ ...tempPeers });
     }
   }, [id]);
 
@@ -113,14 +130,22 @@ const UI3 = () => {
     tempPeer[from].on("stream", (stream: any) => {
       const box = document.querySelector("#test");
       const video = document.createElement("video");
+      video.id = from;
+      video.className = "videoBox"
       video.srcObject = stream;
       video.autoplay = true;
       video.style.width = "300px";
       box?.appendChild(video);
     });
+    tempPeer[from].on("close", () => {
+      console.log("closed22");
+      const video = document.querySelector(`#${from}`);
+      video?.remove();
+    })
 
     tempPeer[from].signal(signal);
     setAnswerPeers(tempPeer);
+    setPeers({ ...tempPeer });
   };
 
   const shareScreen = () => {
