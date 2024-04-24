@@ -18,7 +18,6 @@ export default class InitGame extends Phaser.Scene {
   init(data: any) {
     this.name = data.name;
     this.id = data.id;
-    console.log(data);
     socket.emit("init", { name: data.name });
   }
   create(): void {
@@ -99,7 +98,7 @@ export default class InitGame extends Phaser.Scene {
             playerSprite.scale = 0.6;
 
             const nameLabel = this.add
-              .text(15, 0, `🔵 ` + el, {
+              .text(15, 0, `🔵 ` + data.usersAll[el].name, {
                 // backgroundColor: "#757474aa",
                 align: "center",
                 padding: { x: 6, y: 4 },
