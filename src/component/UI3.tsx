@@ -172,8 +172,8 @@ const UI3 = () => {
           ))}
         </ul>
       </aside>
-      <figure id="test" className="absolute top-0 left-0">
-        <video ref={screenShareRef} autoPlay src=""></video>
+      <figure id="test" className="absolute top-0 left-0 flex flex-row justify-center">
+        {/* <video ref={screenShareRef} autoPlay src=""></video> */}
       </figure>
     </>
   );

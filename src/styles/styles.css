@@ -77,3 +77,18 @@ p, h1, h2, h3, h4, h5, h6 {
 .ui-section{
   background: url(/public/assets/start_bg.gif);
 }
+
+/* video box */
+
+#test{
+  width: 100%;
+  padding: 1em 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  max-height: 200px;
+}
+
+.videoBox{
+  border-radius: 2em;
+  object-fit: fill;
+  margin: 0 1em;
+}
